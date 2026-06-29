@@ -1,0 +1,31 @@
+{
+  "id": "benefits-navigator-a11y-011",
+  "title": "Accessibility conformance (WCAG 2.2 AA) for guide rendering + site shell + PDF reading order",
+  "project": "benefits-navigator",
+  "type": "code",
+  "lane": "donated",
+  "priority": "medium",
+  "domain": [
+    "civic",
+    "public-benefits",
+    "social-services",
+    "plain-language",
+    "accessibility"
+  ],
+  "riskTier": "medium",
+  "urgent": false,
+  "deliverable": "pr",
+  "tokenEstimate": "medium",
+  "status": "open",
+  "context": "Benefits-Navigator is an openly-licensed corpus of plain-language, primary-source-cited, multilingual, accessible guides to public-assistance programs (SNAP, Medicaid/CHIP, WIC, TANF, LIHEAP, SSI, housing, EITC, Lifeline/ACP), delivered as a static site, printable PDFs, and structured data with an optional retrieval-grounded explainer. It is a HIGH risk-tier project: it provides information, not legal/benefits advice, never makes an individualized eligibility determination, and always routes people to the official application and free human help. No partner, credentialed reviewer, or requestor is yet secured. This task brings guide rendering, the site shell, and generated PDFs to WCAG 2.2 AA, since beneficiaries include people using assistive technology, low-bandwidth devices, and print handouts; accessibility is a first-class delivery requirement, not an afterthought.",
+  "objective": "Make guide rendering, the site shell, and PDF output conform to WCAG 2.2 AA, including correct PDF reading order, verified by automated and manual checks.",
+  "acceptanceCriteria": [
+    "Guide rendering and the site shell meet WCAG 2.2 AA, verified by automated accessibility checks in CI plus a manual review pass",
+    "Generated PDFs have correct reading order, tagged structure, and pass an accessibility check",
+    "Accessibility conformance is documented and signed off by the maintainer and plain-language reviewer"
+  ],
+  "output": "apps/site/src/a11y/",
+  "requestor": "TO BE SECURED",
+  "verifiedNeed": false,
+  "outputLicense": "MIT"
+}

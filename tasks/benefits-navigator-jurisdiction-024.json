@@ -1,0 +1,31 @@
+{
+  "id": "benefits-navigator-jurisdiction-024",
+  "title": "Second jurisdiction (state) content pack",
+  "project": "benefits-navigator",
+  "type": "data",
+  "lane": "donated",
+  "priority": "low",
+  "domain": [
+    "civic",
+    "public-benefits",
+    "social-services",
+    "plain-language",
+    "accessibility"
+  ],
+  "riskTier": "high",
+  "urgent": false,
+  "deliverable": "dataset",
+  "tokenEstimate": "large",
+  "status": "open",
+  "context": "Benefits-Navigator is an openly-licensed corpus of plain-language, primary-source-cited, multilingual, accessible guides to public-assistance programs (SNAP, Medicaid/CHIP, WIC, TANF, LIHEAP, SSI, housing, EITC, Lifeline/ACP), delivered as a static site, printable PDFs, and structured data with an optional retrieval-grounded explainer. It is a HIGH risk-tier project: it provides information, not legal/benefits advice, never makes an individualized eligibility determination, and always routes people to the official application and free human help. No partner, credentialed reviewer, or requestor is yet secured. Future work: a second jurisdiction (state) content pack, only after M6, with full source-vetting and expert sign-off. The specific second jurisdiction is TO BE SECURED; this is a representative backlog task.",
+  "objective": "Produce a second-jurisdiction content pack (sources + structured data) with full source-vetting and expert sign-off, only after M6.",
+  "acceptanceCriteria": [
+    "Full source-vetting + provenance recorded for the second jurisdiction's program sources before any content is enabled",
+    "Expert sign-off recorded for the second jurisdiction's content; reuse terms verified per source",
+    "Undertaken only after M6; the specific second jurisdiction remains TO BE SECURED (representative task, not fanned out until a jurisdiction is confirmed)"
+  ],
+  "output": "/output/sources/second-jurisdiction.dataset.json",
+  "requestor": "TO BE SECURED",
+  "verifiedNeed": false,
+  "outputLicense": "CC-BY-4.0"
+}
