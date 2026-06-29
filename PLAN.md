@@ -1,6 +1,6 @@
 # Benefits-Navigator — PLAN.md
 
-> Status: Draft · Version: 0.1.0 · Last updated: 2026-06-28 · Owner: TBD (maintainer) · Lane: donated
+> Status: Draft · Version: 0.2.0 · Last updated: 2026-06-29 · Owner: TBD (maintainer) · Lane: donated
 
 Plain-language, openly-licensed guides to public-assistance programs — what each program is, who it
 is generally for, what it provides, how to apply, and where to get free human help — written at a low
@@ -93,8 +93,15 @@ wasted, failed applications.
 **The need.** Public-assistance programs combine a federal baseline (statute + regulation, e.g.
 SNAP under 7 CFR; Medicaid under 42 CFR; SSI under 20 CFR) with **state administration and state
 options** and, often, **county-level practice**. Eligibility rules, income thresholds, and required
-documents change at least annually (federal poverty guidelines, SNAP cost-of-living adjustments) and
-sometimes mid-year (policy waivers expire; work requirements change). Authoritative information exists
+documents change at known annual points (federal poverty guidelines, SNAP cost-of-living adjustments)
+**but also repeatedly mid-year** — and 2025–2027 is an exceptional period of churn, not a once-a-year
+refresh: the One Big Beautiful Bill Act (OBBBA, signed 2025-07-04) rewrote SNAP and Medicaid work
+requirements with **staggered effective dates** (immigrant-eligibility restrictions effective
+2026-10-01; Medicaid work requirements / 6-month redeterminations effective 2026-12-31 / 2027-01-01),
+and a DHS public-charge NPRM is **pending** (published 2025-11-17, comments closed 2025-12-19) with the
+2022 rule still in effect. A guide written mid-2026 that does not carry these effective dates is
+actively dangerous, so the currency machinery (below) treats re-verification as **event-driven and
+effective-date-aware**, not merely "at least annual." Authoritative information exists
 — on federal agency sites (USDA FNS, CMS, SSA, HHS/ACF, HUD, IRS, FCC), Benefits.gov, USA.gov, and
 state agency portals — but it is fragmented, written well above an accessible reading level, rarely
 multilingual, and almost never assembled into "here is the program, here is who it is generally for,
@@ -112,6 +119,48 @@ protocol, and **one flagship program in one jurisdiction** as a reviewed exempla
 delivery/adoption work `TO BE SECURED` with `verifiedNeed: false`. Outreach is **dated** (see the
 partner-acquisition plan above), and a **build-vs-mothball/pivot decision rule** governs date slips
 so the project never ships to no real beneficiary.
+
+---
+
+## Competitive landscape & differentiation
+
+The space splits into archetypes — **eligibility screeners / application assisters**, **resource
+directories / referral networks**, **benefit-management utilities**, and **official program
+sources** — and, critically, **none of them is an openly-licensed, primary-source-cited,
+currency-tracked plain-language *explainer* corpus.** They screen, route, transact, or publish
+official-but-inaccessible text. The unoccupied niche is the **explanation layer**, and
+Benefits-Navigator is built to occupy exactly it (web-researched detail and citations in
+`COMPETITIVE-ANALYSIS.md`).
+
+- **Code for America / GetCalFresh (the sharpest comparison).** The gold standard for human-centered
+  SNAP *application assistance* (helped millions of households access food assistance; now hands off
+  to CA's BenefitsCal). It is an **application funnel**, in practice **single-program, single-state**,
+  and its content is **not** an openly-licensed, citation-per-claim, reusable corpus. We **explain;
+  they apply** — we are the upstream understanding layer that can route *into* tools like GetCalFresh
+  rather than replace them.
+- **findhelp (formerly Aunt Bertha) / 211.** The dominant social-care **directory** (programs by ZIP;
+  powers parts of 211). It **lists organizations, it does not explain program rules** in plain,
+  sourced language, and its data is closed/variable-currency. Complementary: we explain the program →
+  hand to findhelp/211 for the local human.
+- **mRelief (and other screeners — Single Stop, Benefits.gov/USA.gov finder).** A national SNAP
+  **screener** ("likely eligible?") — precisely the act Benefits-Navigator **refuses**. It is a
+  natural **partner/complement**, not a content competitor; we route *to* it, never replace its
+  determination function.
+- **Benefit-management utilities (e.g. Propel) and official sources (USDA FNS, CMS, state portals).**
+  Manage existing benefits or publish authoritative-but-inaccessible text respectively — potential
+  **distribution partners and primary-source inputs**, not explainer competitors. (Take-up context
+  validates the need: USDA estimates ~88% of eligible people received SNAP in FY2022 — and SNAP is the
+  *high*-take-up program; EITC, Lifeline, and TANF are far worse.)
+
+**The differentiator (the moat).** An **openly-licensed, primary-source-cited, currency-guaranteed,
+plain-language EXPLAINER layer with zero PII and a measured route-to-human guarantee** — trustworthy,
+reusable, always-current explanation in a market where everyone else screens, lists, transacts, or
+publishes inaccessible official text. The defining constraint — **we never determine eligibility** — is
+not a limitation but **the moat**: it is what makes the corpus safe to consult anonymously,
+non-chilling for immigrant families, and **embeddable inside findhelp / 211 / Code-for-America-style
+flows** ("what is this program" beside "where to get it" / "am I likely eligible"). We win not by
+out-UXing any single incumbent but on **coverage + sourcing + reuse + currency**, with depth-first
+discipline (one jurisdiction + flagship program first).
 
 ---
 
@@ -172,7 +221,8 @@ success metrics on their own.
 | Reading level of published guides | n/a | ≥ 90% of guides at grade ≤ 8 (target ≤ 6); 0 published above grade 10 | Automated readability check (multiple formulas) + plain-language reviewer |
 | "Route-to-human + official-application" coverage | n/a | 100% of guides **and** explainer answers include a correct official-application link **and** a free-human-help pointer (navigator/legal aid/211) | Coverage test on every guide/answer + reviewer spot-check |
 | Refusal rate on the not-advice/fraud/immigration red-team suite | none | reported as **refused/total at version N** with a per-version changelog; **≥ 8 cases per refused category** (multiple phrasings + injection); 100% refused/redirected; 0 known bypass | Automated adversarial eval in CI + reviewer audit |
-| Stale-content containment | n/a | 0 claims served past their `validUntil` without an auto-flag/withhold and re-verification | Staleness test against `lastVerified`/`validUntil`; runtime audit |
+| Stale-content containment | n/a | 0 claims served past their `validUntil` **or past a recorded `effectiveDate`/`pendingChange` boundary** without an auto-flag/withhold and re-verification | Staleness test against `lastVerified`/`validUntil`/`effectiveDate`; runtime audit |
+| Beneficiary comprehension (pilot) | n/a | moderated comprehension testing with real beneficiaries shows they understood the program and could act (not just a readability score) | Moderated comprehension session with the pilot partner |
 | Translation review coverage | n/a | 100% of published translations reviewed by a qualified bilingual reviewer (no machine-only translations published) | Translation review ledger |
 | Accessibility | n/a | core guides + site meet WCAG 2.2 AA | Automated + manual a11y audit |
 | PII footprint | n/a | **zero** personal benefits data collected or stored; any interactive feature is stateless/trackless | Privacy review + storage/analytics audit |
@@ -255,10 +305,23 @@ question); code **MIT**.
 1. **Content schema + style guide (`schema/`, `style/`) — built first.** A typed frontmatter schema
    for each guide (program, jurisdiction, audience, plain-language summary, eligibility *factors*,
    how-to-apply steps, documents, pitfalls, official-application link, free-human-help pointers, and a
-   citations array) and a structured program/eligibility-factor data model. The plain-language style
-   guide encodes reading-level targets, sentence/word rules, and a fixed **"this is information, not
-   advice — only the agency decides; here is how to get free help"** framing that every guide and
-   answer must carry.
+   citations array) and a structured program/eligibility-factor data model. The schema makes two
+   2025–2027 realities first-class:
+   - **Effective-dating, not just expiry.** Beyond `validUntil` ("re-check by"), each sourced fact may
+     carry **`effectiveDate`**, **`pendingChange`** (a known future change with its date and a
+     not-yet-law flag), and **`supersededBy`** (a pointer to the version/claim that replaces it). This
+     lets a guide say *"this is the rule today; it changes on `<date>`"* — the dominant failure mode
+     given OBBBA's staggered effective dates and the pending public-charge NPRM, which plain `validUntil`
+     cannot express.
+   - **Jurisdiction tiering + rule-source flag.** `jurisdiction` supports a **county/admin-region tier**,
+     and each fact carries a **`federal-floor` vs `state-option` vs `local-practice` flag** so a guide
+     can mark which rules are mandatory federal floors vs. state options vs. county practice (SNAP as the
+     flagship mitigates but does not remove sub-state variation).
+
+   The plain-language style guide encodes reading-level targets, sentence/word rules, a fixed **"this is
+   information, not advice — only the agency decides; here is how to get free help"** framing that every
+   guide and answer must carry, and the **borderline-case calibration corpus** (below) that draws the
+   line between an allowed *general conditional rule* and a forbidden *individualized determination*.
 
 2. **Not-advice / refusal policy layer (`lib/policy`) — a safety subsystem, not a disclaimer.**
    Applies to the optional explainer and to any interactive feature. Three enforcement points:
@@ -269,6 +332,16 @@ question); code **MIT**.
      low-confidence intent defaults to **refuse-and-route-to-human**; under-answering is the safe error,
      over-promising the dangerous one. Safety target: individualized-determination and fraud false
      negatives **0** on the red-team suite; overall refused-category false-negative rate **< 1%**.
+     The boundary is hardest at the seam where it is most tempting to cross — *conditional explanations*
+     a navigator would give ("households with a member over 60 or disabled often don't face the
+     asset/gross-income test") sit one step from a forbidden individualized determination. To keep the
+     classifier and reviewers from disagreeing case-by-case (which would either over-refuse useful
+     general information or leak determinations), the project ships a **labeled borderline-case
+     calibration corpus** (an M0/M1 artifact of ~50 worked phrasings, each labeled *allowed general
+     conditional rule* vs. *forbidden individualized application*, with the reasoning). This corpus is a
+     single shared source of truth that **feeds the classifier, the style guide, and reviewer training**
+     so the information-vs-determination line is drawn the same way everywhere, and it grows as new
+     borderline cases surface.
    - *System policy*: a `NOT_ADVICE_SYSTEM` charter injected into every explainer prompt establishing
      information-not-advice framing, "only the agency determines eligibility", non-partisanship, the
      corpus-only constraint (answer **only** from retrieved vetted content, cite it, and never invent
@@ -282,12 +355,20 @@ question); code **MIT**.
 3. **Source-vetting, provenance & staleness (`lib/sources`).** Each factual claim is backed by a
    `Source` record (official source name, jurisdiction, citation/section, retrieval date, URL,
    reuse-status note). No guide claim renders without an attached source (citation-coverage test). Each
-   `Source` carries **`lastVerified`** and **`validUntil`** derived from a per-source review interval
-   (federal poverty guidelines + SNAP COLA re-verified at least annually and on known update dates;
-   policy-waiver-dependent claims on a shorter cadence). **Staleness is fail-safe:** at render/serve
-   time, a claim past its `validUntil` is **auto-flagged** ("this figure may be out of date — verify
-   on the official site") or **withheld** for high-severity numeric claims, and routed to
-   re-verification; it cannot return to normal service until re-verified and **re-signed-off**.
+   `Source` carries **`lastVerified`** and **`validUntil`**, and — per component 1 — may carry
+   **`effectiveDate` / `pendingChange` / `supersededBy`** so a claim that is *currently true but about
+   to change on a known date* is modeled explicitly rather than silently going stale. Review intervals
+   are **event-driven, not merely annual**: re-verification fires at the known annual points (federal
+   poverty guidelines in January, SNAP COLA in October) **and** on every recorded statutory/regulatory
+   effective date (e.g., OBBBA's 2026-10-01 / 2026-12-31 / 2027-01-01 milestones) and pending-rule event
+   (e.g., the public-charge NPRM), with policy-waiver-dependent claims on a shorter cadence. Because
+   officials can disagree, the protocol records a **source-hierarchy and conflict-resolution rule**
+   (statute/regulation > federal agency guidance > state rule > state-portal explainer); when sources
+   conflict, the reviewer records which governs. **Staleness is fail-safe:** at render/serve time, a
+   claim past its `validUntil`, **past an `effectiveDate`/`pendingChange` boundary**, or `supersededBy`
+   a newer claim is **auto-flagged** ("this figure may be out of date — verify on the official site") or
+   **withheld** for high-severity numeric claims, and routed to re-verification; it cannot return to
+   normal service until re-verified and **re-signed-off**.
 
 4. **Plain-language + accessibility + i18n pipeline (`lib/content`).** A readability gate (multiple
    formulas + reviewer judgment) blocks guides above the grade target; an accessibility check enforces
@@ -308,6 +389,37 @@ question); code **MIT**.
    blank-slate on fixture scenarios; an LLM judge scores accuracy, groundedness/citation, and fit, with
    a hard assertion that grounded answers never emit invented eligibility numbers. A **minimal** version
    runs as an early kill-gate before heavy content investment; the full version gates the explainer.
+
+**LLM (Claude) leverage — assistive only, never the source of truth.** Claude sits behind the
+provider-neutral LLM client and is used **only** for work a credentialed human then verifies:
+
+- **Drafting plain-language rule explainers from official sources** — compressing dense CFR/agency text
+  into grade-6 prose in the fixed structure (what it is / who it's generally for / what it provides /
+  how to apply / documents / pitfalls / get help). Highest-ROI use: it turns "thousands of pages of
+  regulations" into **reviewable drafts the credentialed reviewer signs off**.
+- **Structuring state-variation and provenance** — extracting a program's **federal floor vs.
+  state options vs. local practice** into the schema, attaching candidate citations, and flagging where
+  a state portal diverges from federal rule (a triage layer for the reviewer, mapped to the
+  jurisdiction-tier and `federal-floor`/`state-option` flags above).
+- **Plain-language + readability iteration and translation drafts** (for bilingual-reviewer sign-off,
+  never machine-only publication); generating "what to bring" checklists.
+- **Adversarial red-team generation** — producing the ≥ 8-per-category misuse phrasings (determination,
+  structuring/fraud, immigration, injection, euphemism, decomposition) and borderline cases.
+- **Staleness diff worklists** — given a new poverty-guideline table or an OBBBA/NPRM provision, drafting
+  the diff against existing guides and surfacing every affected claim as a **re-verification worklist for
+  the reviewer** (high value given 2025–2027 churn).
+- **The corpus-only retrieval explainer** — only if the eval proves grounded+cited beats blank-slate and
+  never invents numbers.
+
+**Where the model must NOT go (release gates, not guidelines):** no individualized eligibility
+determination ("you qualify / you'll get $X"); no legal/benefits/immigration advice (route to counsel);
+**no fabricated rules, thresholds, or amounts** — all program facts come from the cited corpus, never
+the model's parametric memory (which cannot reliably know the current COLA or OBBBA effective dates);
+no "how to qualify"/structuring/concealment coaching; **flag-and-link to official screeners
+(mRelief/GetCalFresh/the state app) and human help, never substitute for them**; no PII solicitation or
+retention. Currency and state-correctness are the model's blind spots — the corpus + provenance +
+staleness layer exists precisely to keep the model on a leash. (Model IDs, pricing, prompt-caching, and
+token-counting: defer to the Claude API skill when implementing the LLM client and eval harness.)
 
 **Key decisions (locked)**
 
@@ -340,14 +452,20 @@ annotations or portal text. Agency **logos, seals, and names** are not used in a
 endorsement or official status.
 
 **Provenance model.** Each claim → a `Source` record (source, jurisdiction, citation/section,
-retrieval date, URL, reuse-status note, `lastVerified`, `validUntil`). The renderer and the explainer
-may not surface a claim without an attached source; a citation-coverage test enforces it.
+retrieval date, URL, reuse-status note, `lastVerified`, `validUntil`, and where relevant
+`effectiveDate` / `pendingChange` / `supersededBy`). When official sources conflict, the recorded
+**source-hierarchy** (statute/regulation > federal agency guidance > state rule > state-portal
+explainer) and the reviewer's note fix which governs. The renderer and the explainer may not surface a
+claim without an attached source; a citation-coverage test enforces it.
 
-**Staleness is fail-safe, not best-effort** (see *Solution approach* §3): claims past `validUntil` are
-auto-flagged or withheld and re-verified + re-signed-off before returning to service. This makes the
-dominant failure mode — *the threshold/rule changed and the guide silently went stale* — a visible,
-gated event. Re-verification is scheduled for the **annual update points** (poverty guidelines, SNAP
-COLA) plus ad-hoc on known policy changes.
+**Staleness is fail-safe, not best-effort** (see *Solution approach* §3): claims past `validUntil`,
+past an `effectiveDate`/`pendingChange` boundary, or `supersededBy` a newer claim are auto-flagged or
+withheld and re-verified + re-signed-off before returning to service. This makes the dominant failure
+modes — *the threshold/rule changed and the guide silently went stale*, and *a known future change
+(e.g., OBBBA's 2026–2027 effective dates) arrived unannounced* — visible, gated events.
+Re-verification is **event-driven, not just calendar-driven**: the **annual update points** (poverty
+guidelines in January, SNAP COLA in October), **plus** every recorded effective date and pending-rule
+milestone, plus ad-hoc on known policy changes.
 
 **Output licensing.** Content/guides/data: **CC-BY-4.0** (CC0 considered to maximize reuse by other
 navigators and benefits-info commons — open question for governance). Code: **MIT**. Translations:
@@ -419,19 +537,27 @@ secured partner.
 - **M0 — Foundations, policy & selection (cold-start).**
   *Goal:* the content schema, the not-advice/refusal policy, the source-vetting protocol, and a
   decision on what to build first exist before any guide is written.
-  *Exit:* content frontmatter + structured-data JSON Schemas merged with CI validation; plain-language
-  style guide + fixed not-advice framing; not-advice/refusal policy spec **reviewed by a credentialed
-  benefits expert**; source-vetting + provenance protocol defined; repo/pnpm/CI (build/lint/schema-
-  validate) skeleton green; **pilot jurisdiction (one state) + flagship program(s) selected** against
-  explicit criteria so M1 builds against a real corpus and reviewer profile.
+  *Exit:* content frontmatter + structured-data JSON Schemas merged with CI validation — **including
+  `effectiveDate`/`pendingChange`/`supersededBy` fields, a county/admin-region jurisdiction tier, and a
+  `federal-floor`/`state-option`/`local-practice` flag**; plain-language style guide + fixed not-advice
+  framing; not-advice/refusal policy spec **reviewed by a credentialed benefits expert**, with the seed
+  **borderline-case calibration corpus (~50 labeled phrasings)** feeding the classifier, style guide,
+  and reviewer training; source-vetting + provenance protocol defined **with a source-hierarchy +
+  conflict-resolution rule**; repo/pnpm/CI (build/lint/schema-validate) skeleton green; **pilot
+  jurisdiction (one state) + flagship program(s) selected** against explicit criteria so M1 builds
+  against a real corpus and reviewer profile.
 
 - **M1 — First program, first jurisdiction (expert-gated exemplar) + provenance.**
   *Goal:* one flagship program guide for the pilot jurisdiction, fully sourced and reviewed, plus the
   provenance/staleness machinery.
-  *Exit:* source-vetting done + provenance records for the flagship program; structured
-  eligibility-factor data + the rendered plain-language guide drafted, **primary-source-cited**, and
-  **expert-signed-off**; citation-coverage + staleness fail-safe implemented and tested; route-to-human
-  + official-application coverage gate passing. **Kill-gate:** a **minimal grounded-vs-blank-slate eval**
+  *Exit:* source-vetting done + provenance records for the flagship program (with source-hierarchy
+  applied where sources conflict); structured eligibility-factor data + the rendered plain-language
+  guide drafted, **primary-source-cited**, and **expert-signed-off**; **any known future change carried
+  as `effectiveDate`/`pendingChange`** ("rule today; changes on `<date>`"); citation-coverage +
+  effective-date-aware staleness fail-safe implemented and tested; route-to-human + official-application
+  coverage gate passing; **for any immigration-adjacent content, an "accurate-but-non-chilling" standard
+  applied** (state current law, mark proposals as not-yet-law, avoid both false alarm and false
+  reassurance, route to counsel), attorney-reviewed. **Kill-gate:** a **minimal grounded-vs-blank-slate eval**
   on a handful of fixtures runs as an early go/no-go for the optional explainer — if grounded+cited does
   not at least trend ahead (and stay free of invented numbers), the explainer is deferred, not forced.
 
@@ -439,36 +565,49 @@ secured partner.
   *Goal:* the quality gates that make the content usable by the actual beneficiaries.
   *Exit:* readability gate enforced (≥ 90% of guides at grade ≤ 8); WCAG 2.2 AA met on the flagship
   guide + site shell; translation workflow live with **≥ 1 reviewed translation** of the flagship guide
-  in a high-need language; 2–3 additional flagship programs drafted + expert-reviewed for the pilot
+  in a high-need language; **first oral/visual modalities for low-literacy + LEP users** (plain-language
+  audio and/or iconography/flowcharts plus a "what to bring" checklist, since grade-6 prose alone does
+  not reach everyone); 2–3 additional flagship programs drafted + expert-reviewed for the pilot
   jurisdiction.
 
 - **M3 — Delivery + optional explainer (policy-gated).**
   *Goal:* get the content into people's hands and (only if proven) add Q&A.
-  *Exit:* accessible static site + printable PDF handouts + structured-data export shipped; "find free
-  help" pointers (211 / legal aid / agency lines) integrated **without** collecting PII; **if** the
-  M1 kill-gate and the full eval pass, the retrieval-grounded explainer ships behind the not-advice
+  *Exit:* accessible static site + printable PDF handouts + structured-data export shipped — **every
+  PDF/print artifact stamped with a content version, a "verify-after" date, and a short URL to the live
+  page** so an offline copy declares its own currency; "find free help" pointers (211 / legal aid /
+  agency lines) integrated **without** collecting PII; **if** the M1 kill-gate and the full eval pass,
+  the retrieval-grounded explainer ships behind the not-advice
   policy with the red-team suite green; otherwise the explainer is explicitly deferred and the milestone
   ships guides + data only.
 
 - **M4 — Eval, hardening & pilot readiness.**
   *Goal:* prove quality and harden for real, vulnerable users.
   *Exit:* full grounded-vs-blank-slate eval reported; expanded not-advice/fraud/immigration red-team
-  green (100% refused/redirected); staleness automation verified against the annual-update points;
-  accessibility + offline PDF + privacy (zero-PII) verified end-to-end; pilot onboarding + distribution
-  runbook ready.
+  green (100% refused/redirected); staleness automation verified against the annual-update points
+  **and recorded effective dates**; a **"monitored-sources" change-watch** (FNS/CMS/IRS/state-portal
+  pages + Federal Register for rules like the public-charge NPRM) opens re-verification tasks
+  automatically when a watched source changes (currency goes event-driven, not calendar-only); an
+  **errata/retraction runbook** defines how a discovered error is withdrawn, who is notified, and how
+  downstream PDFs/translations are flagged as superseded; accessibility + offline PDF + privacy
+  (zero-PII) verified end-to-end; pilot onboarding + distribution runbook ready.
 
 - **M5 — Pilot adoption & handoff (the deed).**
   *Goal:* a real partner uses the guides with real people.
   *Exit (Definition of Shipped):* a secured partner/navigator uses the guides to help real people
   understand/access a program; not-advice framing + refusals independently verified; shipped content
-  expert-signed-off (immigration content attorney-signed); translations reviewed; ≥ 1 beneficiary
-  outcome recorded. *(Gated on a secured partner — TO BE SECURED.)*
+  expert-signed-off (immigration content attorney-signed); translations reviewed; **moderated
+  beneficiary comprehension testing** confirms people understood and could act (beyond readability
+  scores); ≥ 1 beneficiary outcome recorded. *(Gated on a secured partner — TO BE SECURED.)*
 
 - **M6 — Sustain & scale (post-delivery).**
   *Goal:* durable maintenance and careful expansion.
-  *Exit:* maintenance rotation + ops runbook + an **annual re-verification cadence** tied to the
-  poverty-guideline/COLA update points; outcome tracking (not page views); a documented, expert-gated
-  process for adding programs/jurisdictions and languages.
+  *Exit:* maintenance rotation + ops runbook + an **event-driven re-verification cadence** tied to the
+  poverty-guideline/COLA update points, recorded effective dates, and the monitored-sources change-watch
+  (not calendar-only); outcome tracking (not page views); a documented, expert-gated process for adding
+  programs/jurisdictions and languages; **an embeddable open-data layer / MCP server** exposing the
+  vetted corpus (explainers + structured eligibility-factor data + citations + currency metadata, with
+  the not-advice guardrails enforced server-side) so findhelp/211/library/CfA-style tools can surface
+  "what is this program" beside their listings/flows.
 
 Dependencies flow M0 → M1 → M2 → M3 → M4 → M5 → M6. The **jurisdiction + flagship-program decision is
 made in M0 and gates M1–M6** (it fixes the source corpus, source-reuse legality, and reviewer profile);
@@ -549,6 +688,10 @@ reflecting that the framing and the corpus choice gate everything downstream —
 | Used to game eligibility / commit benefits fraud (hide income, structure assets) | Medium | Critical | Hard refusal of structuring/concealment requests with redirect to lawful application + legal aid; red-team category with ≥ 8 cases + injection; output screening for structuring/fraud content | Red-team reviewer / Expert |
 | Immigration/public-charge misinformation chills eligible families | Medium | Critical | Immigration-attorney sign-off required; refuse individualized immigration analysis; route to qualified immigration counsel/accredited rep; neutral, sourced, current public-charge explainer only | Immigration attorney / Maintainer |
 | Inaccurate or outdated threshold/rule (figures change annually + mid-year) | High | High | Primary-source citation required (coverage test); expert sign-off; **runtime staleness fail-safe** (`lastVerified`/`validUntil` auto-flag/withhold past review window); re-verification scheduled to poverty-guideline/COLA update points | Expert reviewer / Maintainer |
+| Known future change (e.g., OBBBA 2026–2027 effective dates) arrives unannounced / silently | High | Critical | First-class **`effectiveDate`/`pendingChange`/`supersededBy`** fields ("rule today; changes on `<date>`"); effective-date-aware staleness fail-safe; **event-driven monitored-sources change-watch** (incl. Federal Register for the public-charge NPRM) opens re-verification tasks automatically | Expert reviewer / Maintainer |
+| Conflicting official sources (reg vs. federal guidance vs. state portal) | Medium | High | Recorded **source-hierarchy + conflict-resolution rule** (statute/reg > federal guidance > state rule > state portal); reviewer records which governs per claim | Expert / Maintainer |
+| Eligibility-vs-determination line drawn inconsistently (over-refuse useful info or leak a determination) | Medium | High | **Labeled borderline-case calibration corpus (~50 phrasings)** as single source of truth feeding classifier + style guide + reviewer training; fail-closed default; grows as new cases surface | Red-team reviewer / Expert |
+| Accurate immigration content nonetheless chills eligible families | Medium | Critical | **"Accurate-but-non-chilling" content standard** (state current law, mark proposals as not-yet-law, avoid both false alarm and false reassurance, route to counsel), immigration-attorney-reviewed — a content-quality dimension distinct from the refusal layer | Immigration attorney / Maintainer |
 | No partner secured → cannot reach Definition of Shipped | High | High | Honest `TO BE SECURED`/`verifiedNeed:false`; **dated partner-acquisition plan** (jurisdiction by 2026-08-31, reviewer by 2026-10-31, partner by 2026-12-31) + **build-vs-mothball/pivot rule** at ~2027-03-31 (contribute corpus to an existing benefits-info commons / library program, or mothball — rather than publish to no one) | Steward / Maintainer |
 | No credentialed reviewer → content blocked | Medium | High | Recruit via legal-aid networks, benefits-counselor associations, law-school clinics; hold content at M0 platform stage; do not ship HIGH content unreviewed | Maintainer |
 | Reading level too high / not actually usable by beneficiaries | Medium | High | Plain-language style guide + automated readability gate (grade target) + plain-language reviewer; user-comprehension check with the partner in pilot | Plain-language reviewer |
@@ -595,10 +738,13 @@ behalf.
 ## Sustainability & maintenance
 
 After delivery, a named **maintenance rotation** owns the schema, site, and pipeline; the **steward**
-owns the partner relationship and outcome tracking. Benefits content carries a **mandatory annual
-re-verification cadence** tied to the real update points (HHS poverty guidelines in January; SNAP COLA
-in October; ad-hoc on policy/waiver changes), enforced at runtime by the `lastVerified`/`validUntil`
-fail-safe so a source past its window is **auto-flagged or withheld** until re-verified and
+owns the partner relationship and outcome tracking. Benefits content carries a **mandatory,
+event-driven re-verification cadence** tied to the real update points (HHS poverty guidelines in
+January; SNAP COLA in October), **every recorded `effectiveDate`/`pendingChange` milestone** (e.g.,
+OBBBA's 2026–2027 dates, the pending public-charge NPRM), and a **monitored-sources change-watch** that
+opens re-verification tasks when a watched official source changes — not a once-a-year refresh. It is
+enforced at runtime by the `lastVerified`/`validUntil`/`effectiveDate` fail-safe so a source past its
+window is **auto-flagged or withheld** until re-verified and
 **re-signed-off** — stale figures cannot silently keep serving as current. Material legal updates
 require fresh expert sign-off (and immigration-attorney sign-off for immigration content). Translations
 are re-reviewed when the source guide changes. Outcomes are tracked with the partner (people helped to
@@ -606,6 +752,38 @@ understand/access a program; navigator time-saved / fewer wrong applications) �
 not-advice red-team suite is maintained as living tests and expanded as new misuse vectors appear.
 Expansion to more programs, jurisdictions, or languages follows a documented, expert-gated process and
 only after the first is stable.
+
+---
+
+## Adjacent opportunities
+
+The defining constraint — a **reusable, openly-licensed rules-explainer with currency-tracking** — is
+bigger than benefits. These are spin-offs to seed deliberately, not scope creep for v1 (benefits stays
+depth-first); they are recorded so the schema and pipeline are built to generalize.
+
+**Perpendicular (reusable engine, other domains).**
+
+- **A shared "rules-explainer engine with currency-tracking"** — the claim → source →
+  `lastVerified`/`validUntil`/`effectiveDate` schema, the readability + accessibility + i18n pipeline,
+  the not-advice/refusal policy layer, the source-change watcher, and the grounded-vs-blank-slate eval —
+  generalizes to **any high-stakes, frequently-changing, jurisdiction-varying rule corpus** (immigration
+  procedure, tax, housing code, disability/veterans benefits, the sibling `public-official-guide`). The
+  benefits corpus is its first instantiation; the engine is the durable asset.
+- **An MCP server** exposing the vetted corpus as tools other agents can ground on, with the same
+  not-advice guardrails enforced server-side — the open corpus as infrastructure inside other
+  assistants, and a clean Elyos agent-neutral-core fit.
+- **A standalone "currency-watch" service** (monitored official sources → change events →
+  re-verification tasks) other civic-info projects could subscribe to.
+
+**Parallel (same beneficiaries, adjacent content) — natural sibling projects.**
+
+- **know-your-rights** explainers (tenant rights, due-process in benefits denials/appeals, workplace
+  rights) — the same plain-language + cited + non-advice + route-to-counsel pattern.
+- **community-resource-maps / food-assistance-maps** — the *local-org* layer that complements our
+  *program-rules* layer; designed to **hand off to and ingest from** findhelp/211 rather than rebuild
+  their directory.
+- **financial-literacy-open** (EITC/CTC, banking, debt, budgeting) in the same sourced plain-language
+  corpus — EITC already overlaps the benefits set.
 
 ---
 
@@ -633,7 +811,18 @@ only after the first is stable.
 - **Lane:** donated by default; is there a future funded lane for expert review/translation hours with
   a hard budget cap?
 - **Public-charge content depth:** how much to cover vs. routing entirely to immigration counsel, given
-  the chilling-effect stakes?
+  the live NPRM and the chilling-effect stakes — full attorney-reviewed, non-chilling explainer vs.
+  minimal "this is changing; talk to counsel" routing?
+- **Partner-vs-competitor / distribution posture:** are mRelief / Propel / findhelp / 211 / a library
+  system the right *distribution* partners (not competitors) for an open explainer layer — a
+  complement-not-compete posture that unlocks reach we can't build alone, and embeds our explainers
+  beside their screening/listing flows? (Confirm their embed/API terms.)
+- **Event-driven vs. calendar currency:** is the monitored-sources / Federal-Register change-watch in
+  scope for M4, or deferred? It materially reduces stale-content risk during the 2025–2027 churn.
+- **CC0 as the "infrastructure" choice:** CC0 likely maximizes embedding by findhelp/211/CfA-style
+  reusers; weigh against attribution to reviewers/primary sources (ties to the license question above).
+- **Comprehension instrument:** what moderated beneficiary-comprehension method does the pilot use
+  beyond readability formulas (measuring whether people understood and could act)?
 
 ---
 
@@ -750,10 +939,56 @@ key tasks, milestone Definitions of Done, and a complete schema-valid example Ta
 
 **Headline gate:** No HIGH-tier benefits content ships without (a) a primary-source citation, (b)
 credentialed-reviewer sign-off (plus immigration-attorney sign-off for immigration content), and (c)
-the not-advice framing + route-to-human pointer — and no claim serves past its `validUntil`.
+the not-advice framing + route-to-human pointer — and no claim serves past its `validUntil` or a
+recorded `effectiveDate`/`pendingChange` boundary.
 
 **Outstanding human decisions:** secure a pilot partner + credentialed reviewer + immigration
 attorney; choose the pilot jurisdiction/flagship program (criteria fixed, decision by 2026-08-31);
 decide CC-BY vs CC0; decide whether the explainer ships at all.
 
-**Verdict:** Approved as a Draft (v0.1.0) ready for maintainer and Elyos-governance review.
+**Verdict:** Approved as a Draft (v0.2.0) ready for maintainer and Elyos-governance review.
+
+---
+
+## Changelog — v0.2 (analysis merged)
+
+This version merges the findings of `COMPETITIVE-ANALYSIS.md` into the plan. Changes are surgical and
+additive; no guardrail was weakened and no fact/threshold was invented.
+
+**Concrete fixes applied:**
+
+- **Effective-dating is now first-class.** Added **`effectiveDate` / `pendingChange` / `supersededBy`**
+  to the content/`Source` schema alongside `validUntil`, so a guide can state "rule today; changes on
+  `<date>`" — the dominant 2025–2027 failure mode given OBBBA's staggered effective dates (immigrant
+  restrictions 2026-10-01; Medicaid 2026-12-31 / 2027-01-01) and the pending public-charge NPRM.
+  Threaded through the schema (component 1), staleness fail-safe (component 3), provenance model,
+  success metric, risks, and Roadmap (M0/M1).
+- **Eligibility-information-vs-determination boundary strengthened.** Added a **labeled borderline-case
+  calibration corpus (~50 phrasings)** as a single source of truth feeding the intent classifier, the
+  style guide, and reviewer training (M0/M1 artifact), to keep the line drawn consistently.
+- **Currency cadence raised above "at least annually"** to **event-driven and effective-date-aware**
+  re-verification (annual points + every recorded effective date / pending-rule milestone + a
+  monitored-sources change-watch) in Problem, architecture, Data/compliance, Sustainability, Roadmap.
+- Added a **source-hierarchy + conflict-resolution rule**, a **county/admin-region jurisdiction tier**
+  with a `federal-floor`/`state-option`/`local-practice` flag, an **"accurate-but-non-chilling"
+  immigration content standard**, **PDF version/verify-after stamping + errata/retraction runbook**,
+  **oral/visual modalities**, and **moderated beneficiary comprehension testing**.
+
+**Strategy integrated:**
+
+- New **"Competitive landscape & differentiation"** section (Code for America/GetCalFresh = application
+  funnel; findhelp/211 = directory not rule-explainer; mRelief = the screener we refuse to be) — the
+  differentiator is the openly-licensed, primary-source-cited, currency-guaranteed plain-language
+  **explainer** layer with zero PII and a route-to-human guarantee; *never determining eligibility IS
+  the moat*, making the corpus embeddable inside findhelp/211/CfA flows.
+- **Claude API leverage folded into architecture** (grade-6 rule explainers from CFR/agency text for
+  reviewer sign-off; federal-floor vs state-option vs local-practice structuring; staleness diff
+  worklists) with hard "never determine eligibility / never give legal advice" release-gate boundaries.
+- **Optimizations folded into the Roadmap** (M0–M6) and a new **"Adjacent opportunities"** section
+  (shared rules-explainer engine + MCP server + ties to know-your-rights / community-resource-maps /
+  food-assistance-maps). **Open questions merged** (distribution-partner posture, event-driven currency,
+  CC0 as infrastructure choice, comprehension instrument).
+
+**Preserved:** all guardrails (not-advice / non-partisan / privacy-by-construction / zero-PII), the
+HIGH risk-tier gates, the dated partner-acquisition + mothball/pivot rule, the vision, and section
+structure. v0.1.0 → v0.2.0.

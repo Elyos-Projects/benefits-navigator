@@ -1,6 +1,6 @@
 # Benefits-Navigator — TASKS.md
 
-> Status: Draft · Version: 0.1.0 · Last updated: 2026-06-28 · Owner: TBD (maintainer) · Lane: donated
+> Status: Draft · Version: 0.2.0 · Last updated: 2026-06-29 · Owner: TBD (maintainer) · Lane: donated
 
 Backlog for **Benefits-Navigator** (slug: `benefits-navigator`), an openly-licensed corpus of
 **plain-language, primary-source-cited, multilingual, accessible** guides to public-assistance
@@ -55,9 +55,9 @@ representative (**TO BE SECURED**).
 |---|---|---|---|---|---|---|---|
 | benefits-navigator-selection-000 | Pilot jurisdiction (state) + flagship program(s) selection, scored against explicit criteria — gates M1–M6 | research | small | medium | document | — | Maintainer + Expert (benefits) |
 | benefits-navigator-policy-001 | Not-advice / refusal policy specification (no individualized determinations, no fraud/structuring, no immigration legal advice, route-to-human) | design-spec | medium | high | document | — | Expert (benefits) + Red-team reviewer |
-| benefits-navigator-schema-002 | Content frontmatter schema + structured program/eligibility-factor data model + CI schema validation | code | medium | low | pr | — | Maintainer |
+| benefits-navigator-schema-002 | Content frontmatter schema + structured program/eligibility-factor data model (incl. `effectiveDate`/`pendingChange`/`supersededBy`, county tier, federal-floor/state-option/local-practice flag) + CI schema validation | code | medium | low | pr | — | Maintainer |
 | benefits-navigator-style-003 | Plain-language style guide + fixed "information, not advice / only the agency decides / get free help" framing + readability targets | design-spec | small | medium | document | — | Plain-language reviewer + Expert (benefits) |
-| benefits-navigator-sourcing-004 | Source-vetting + provenance protocol (primary-source citation, reuse-terms verification, `lastVerified`/`validUntil`) | design-spec | small | medium | document | 002 | Maintainer + Expert (benefits) |
+| benefits-navigator-sourcing-004 | Source-vetting + provenance protocol (primary-source citation, reuse-terms verification, `lastVerified`/`validUntil`/`effectiveDate`, source-hierarchy + conflict-resolution rule) | design-spec | small | medium | document | 002 | Maintainer + Expert (benefits) |
 | benefits-navigator-repo-005 | Monorepo + pnpm + TS/ESM + CI (build/lint/schema-validate) skeleton | code | small | low | pr | — | Maintainer |
 
 **Acceptance criteria — key tasks**
@@ -91,6 +91,11 @@ representative (**TO BE SECURED**).
   - Defines the adversarial test taxonomy the red-team suite must cover, **including** cumulative-intent
     decomposition, reframing/euphemism, and prompt-injection, with a minimum number of cases per
     refused category.
+  - Specifies a **labeled borderline-case calibration corpus (~50 worked phrasings)** distinguishing an
+    allowed *general conditional rule* ("households with a member over 60 or disabled often don't face
+    the asset test") from a forbidden *individualized determination*, with reasoning — a single shared
+    source of truth that feeds the intent classifier, the style guide, and reviewer training, and grows
+    as new borderline cases surface.
   - Mandates the persistent not-advice labeling, the credentialed-reviewer gate, and the
     immigration-attorney gate for immigration content.
   - Reviewed and signed off by a credentialed benefits expert (recorded in the reviewers ledger).
@@ -99,8 +104,13 @@ representative (**TO BE SECURED**).
   - Typed frontmatter schema per guide: program, jurisdiction, audience, plain-language summary,
     eligibility **factors** (described, not a determination), how-to-apply steps, documents, pitfalls,
     `officialApplicationUrl`, `freeHelpPointers[]`, and a `citations[]` array with provenance fields.
-  - Structured program/eligibility-factor data model with `lastVerified`/`validUntil` on every sourced
-    figure; CI fails on schema-invalid content or any claim missing a citation.
+  - Structured program/eligibility-factor data model with `lastVerified`/`validUntil` **plus
+    `effectiveDate` / `pendingChange` / `supersededBy`** on every sourced figure (so a fact can be
+    "true today; changes on `<date>`" — required for OBBBA's staggered 2026–2027 effective dates and the
+    pending public-charge NPRM); CI fails on schema-invalid content or any claim missing a citation.
+  - `jurisdiction` supports a **county/admin-region tier**, and each fact carries a
+    **`federal-floor` / `state-option` / `local-practice` flag** so guides mark which rules are
+    mandatory federal floors vs. state options vs. local practice.
   - Schema enforces presence of an official-application link **and** ≥ 1 free-help pointer on every
     guide (the route-to-human coverage gate).
 
@@ -108,12 +118,16 @@ representative (**TO BE SECURED**).
   - Encodes reading-level targets (grade ≤ 6–8; never publish above grade 10) and concrete
     sentence/word/structure rules; specifies the fixed not-advice + non-partisan framing block that
     every guide and answer must carry verbatim.
+  - Incorporates the **borderline-case calibration corpus** (from policy-001) so authors and reviewers
+    draw the information-vs-determination line the same way the classifier does.
 
 **M0 Definition of Done:** content + data schemas merged with CI validation (citation + route-to-human
-gates enforced); not-advice/refusal policy spec **expert-reviewed**; plain-language style guide + fixed
-framing; source-vetting/provenance protocol defined; TS/ESM skeleton + green CI; **pilot jurisdiction +
-flagship program(s) selected (or shortlisted with the fixed 2026-08-31 decision)** so M1 builds against
-the right corpus and reviewer profile.
+gates enforced; `effectiveDate`/`pendingChange`/`supersededBy`, county tier + federal-floor/state-option
+flag present); not-advice/refusal policy spec **expert-reviewed** with the seed **borderline-case
+calibration corpus**; plain-language style guide + fixed framing; source-vetting/provenance protocol
+defined **with a source-hierarchy + conflict-resolution rule**; TS/ESM skeleton + green CI; **pilot
+jurisdiction + flagship program(s) selected (or shortlisted with the fixed 2026-08-31 decision)** so M1
+builds against the right corpus and reviewer profile.
 
 ---
 
@@ -137,9 +151,14 @@ the right corpus and reviewer profile.
 
 - **benefits-navigator-provenance-007** (citation coverage + staleness)
   - No guide claim renders without an attached `Source` (citation-coverage test).
-  - Each `Source` carries `lastVerified` + `validUntil`; at render/serve time a claim past `validUntil`
-    is **auto-flagged or withheld** (withheld for high-severity numeric figures) until re-verified and
-    **re-signed-off**; a staleness test asserts no claim serves as current past its window.
+  - Each `Source` carries `lastVerified` + `validUntil` **and, where relevant,
+    `effectiveDate`/`pendingChange`/`supersededBy`**; at render/serve time a claim past `validUntil`,
+    **past an `effectiveDate`/`pendingChange` boundary, or `supersededBy` a newer claim** is
+    **auto-flagged or withheld** (withheld for high-severity numeric figures) until re-verified and
+    **re-signed-off**; a staleness test asserts no claim serves as current past its window, and a guide
+    can render "rule today; changes on `<date>`" for known future changes.
+  - When official sources conflict, the recorded **source-hierarchy** (statute/reg > federal guidance >
+    state rule > state portal) and the reviewer's note determine which governs.
 
 - **benefits-navigator-guide-008** (flagship program guide)
   - Covers, in plain language: what the program is; who it is *generally* for (factors, **not** an
@@ -150,6 +169,10 @@ the right corpus and reviewer profile.
   - Contains **no** "you qualify / you'll get $X" language and **no** structuring/"how to qualify"
     guidance; **expert sign-off recorded** before it ships (immigration-attorney sign-off if any
     non-citizen-eligibility content is included).
+  - Any known future change is carried as `effectiveDate`/`pendingChange` ("rule today; changes on
+    `<date>`"); any immigration-adjacent content meets the **"accurate-but-non-chilling" standard**
+    (state current law, mark proposals as not-yet-law, avoid both false alarm and false reassurance,
+    route to counsel), attorney-reviewed.
 
 - **benefits-navigator-eval-009** (minimal kill-gate)
   - Runs benefits questions retrieval-grounded+cited vs. blank-slate on a small fixture set; reports the
@@ -193,7 +216,9 @@ grounded-vs-blank-slate kill-gate run, with an explicit go/no-go recorded for th
 
 **M2 Definition of Done:** readability gate enforced (≥ 90% of guides at grade ≤ 8); WCAG 2.2 AA met on
 the flagship guide + site shell + PDFs; translation workflow live with ≥ 1 reviewer-approved
-translation; 2–3 additional flagship programs drafted, cited, and expert-signed-off.
+translation; **first oral/visual modalities** (plain-language audio and/or iconography/flowcharts + a
+"what to bring" checklist) for low-literacy + LEP users beyond grade-level prose; 2–3 additional
+flagship programs drafted, cited, and expert-signed-off.
 
 ---
 
@@ -211,6 +236,9 @@ translation; 2–3 additional flagship programs drafted, cited, and expert-signe
 - **benefits-navigator-site-014** (delivery)
   - Renders the corpus as an accessible (WCAG 2.2 AA), offline-friendly, low-bandwidth site; generates
     print-ready plain-language PDF handouts; exports the structured data for reuse.
+  - **Every PDF/print artifact is stamped with a content version, a "verify-after" date, and a short URL
+    to the live page** so an offline copy declares its own currency (printed handouts are the worst-case
+    stale vector).
   - **No accounts, no PII fields, no profiling/tracking analytics**; privacy review confirms
     zero-PII/trackless delivery.
 
@@ -243,7 +271,7 @@ shipped regardless.
 | ID | Title | Type | Size | Risk | Deliverable | Depends on | Reviewer |
 |---|---|---|---|---|---|---|---|
 | benefits-navigator-eval-018 | Full grounded-vs-blank-slate eval (accuracy/groundedness/fit; zero invented numbers) — full version of eval-009 | code | medium | medium | pr | 009, 016 | Maintainer + Expert (benefits) |
-| benefits-navigator-hardening-019 | Hardening: staleness automation vs. annual update points, expanded red-team, a11y/PDF/privacy verification + pilot runbook | code | medium | high | pr | 007, 014, 017 | Red-team reviewer + Maintainer |
+| benefits-navigator-hardening-019 | Hardening: staleness automation vs. update points + recorded effective dates, monitored-sources change-watch, errata/retraction runbook, expanded red-team, a11y/PDF/privacy verification + pilot runbook | code | medium | high | pr | 007, 014, 017 | Red-team reviewer + Maintainer |
 
 **Acceptance criteria — key tasks**
 
@@ -254,13 +282,19 @@ shipped regardless.
 
 - **benefits-navigator-hardening-019** (hardening + pilot readiness)
   - Staleness re-verification automation tied to the real update points (HHS poverty guidelines in
-    January; SNAP COLA in October) verified; expanded red-team still 100% refused/redirected;
-    WCAG 2.2 AA + offline PDF + zero-PII verified end-to-end; pilot onboarding + distribution runbook
-    written (for libraries/food banks/navigators).
+    January; SNAP COLA in October) **and to recorded `effectiveDate`/`pendingChange` milestones** (e.g.,
+    OBBBA 2026–2027 dates, the public-charge NPRM) verified; a **"monitored-sources" change-watch**
+    (FNS/CMS/IRS/state-portal pages + Federal Register) opens re-verification tasks automatically when a
+    watched source changes (event-driven, not calendar-only); an **errata/retraction runbook** defines
+    how a discovered error is withdrawn, who is notified, and how downstream PDFs/translations are
+    flagged as superseded; expanded red-team still 100% refused/redirected; WCAG 2.2 AA + offline PDF +
+    zero-PII verified end-to-end; pilot onboarding + distribution runbook written (for libraries/food
+    banks/navigators).
 
 **M4 Definition of Done:** full eval reported (explainer ships only if it passes); expanded red-team
-green; staleness automation verified; accessibility + offline + privacy verified; pilot-ready with an
-onboarding/distribution runbook.
+green; staleness automation verified (annual points + recorded effective dates); monitored-sources
+change-watch + errata/retraction runbook in place; accessibility + offline + privacy verified;
+pilot-ready with an onboarding/distribution runbook.
 
 ---
 
@@ -289,7 +323,10 @@ onboarding/distribution runbook.
   - The pilot partner/navigator demonstrably uses the guides to help real people understand/access a
     program; ≥ 1 outcome is recorded (a person helped, or a navigator's verified time-saved /
     fewer-wrong-applications result), with the partner's attestation.
-  - Not-advice framing + route-to-human upheld throughout; figures current (no stale claims served).
+  - **Moderated beneficiary comprehension testing** (not just readability scores) confirms people
+    understood the program and could act.
+  - Not-advice framing + route-to-human upheld throughout; figures current (no stale claims served past
+    `validUntil` or a recorded effective-date boundary).
 
 **M5 Definition of Done:** project-level **Definition of Shipped** met — a real partner adopts the
 guides and uses them to help real people, with not-advice/refusals independently verified, shipped
@@ -302,19 +339,24 @@ outcome recorded. *(Gated on a secured partner — TO BE SECURED.)*
 
 | ID | Title | Type | Size | Risk | Deliverable | Depends on | Reviewer |
 |---|---|---|---|---|---|---|---|
-| benefits-navigator-ops-022 | Ops runbook + outcome tracking + maintenance rotation + annual re-verification cadence + gated expansion process | maintenance | medium | medium | document | 021 | Maintainer + Steward |
+| benefits-navigator-ops-022 | Ops runbook + outcome tracking + maintenance rotation + event-driven re-verification cadence + embeddable open-data/MCP layer + gated expansion process | maintenance | medium | medium | document | 021 | Maintainer + Steward |
 
 **Acceptance criteria — benefits-navigator-ops-022**
-- Runbook covers deploy, content updates, source re-verification, translation re-review, and partner
-  support.
+- Runbook covers deploy, content updates, source re-verification, translation re-review, errata, and
+  partner support.
 - Outcome tracking records people helped / navigator time-saved / fewer wrong applications (not page
-  views); annual re-verification cadence tied to poverty-guideline (January) + SNAP COLA (October)
-  update points, enforced by the staleness fail-safe.
+  views); **event-driven re-verification cadence** tied to poverty-guideline (January) + SNAP COLA
+  (October) update points, **recorded effective dates, and the monitored-sources change-watch**,
+  enforced by the staleness fail-safe.
 - Named maintenance rotation; documented, **expert-gated** process for adding programs, jurisdictions,
   and languages.
+- **Embeddable open-data layer / MCP server** exposing the vetted corpus (explainers + structured
+  eligibility-factor data + citations + currency metadata, not-advice guardrails enforced server-side)
+  so findhelp/211/library/CfA-style tools can surface "what is this program" beside their flows.
 
 **M6 Definition of Done:** project sustainably maintained with beneficiary outcomes tracked, a rotation
-owning it, an annual legal-content re-verification cadence, and a gated expansion process.
+owning it, an **event-driven** legal-content re-verification cadence (update points + effective dates +
+change-watch), an embeddable open-data/MCP layer, and a gated expansion process.
 
 ---
 
@@ -328,6 +370,9 @@ owning it, an annual legal-content re-verification cadence, and a gated expansio
 | benefits-navigator-public-charge-026 | Dedicated public-charge / non-citizen-eligibility explainer | writing | medium | high | document | Immigration-attorney sign-off mandatory; neutral, current, route-to-counsel |
 | benefits-navigator-doc-helper-027 | "Documents you may need" interactive checklist (informational, no PII stored) | code | small | medium | pr | Client-side only; never stores answers; not a determination |
 | benefits-navigator-print-028 | Print-ready bilingual one-page handouts for walk-in distribution | design-spec | small | medium | document | For food banks/libraries; derived from cited content |
+| benefits-navigator-watch-029 | Monitored-sources change-watch (FNS/CMS/IRS/state portals + Federal Register) → auto-opens re-verification tasks | code | medium | medium | pr | Event-driven currency; standalone "currency-watch" utility candidate; could land earlier in M4 |
+| benefits-navigator-mcp-030 | MCP server + embeddable open-data layer exposing the vetted corpus (not-advice guardrails enforced server-side) | code | medium | medium | pr | Corpus as infrastructure inside findhelp/211/CfA-style tools and other agents; agent-neutral-core fit |
+| benefits-navigator-engine-031 | Extract the reusable rules-explainer engine (schema + readability/a11y/i18n pipeline + not-advice layer + change-watch + eval) for adjacent domains | design-spec | medium | medium | document | Perpendicular spin-off; seeds know-your-rights / financial-literacy-open / community-resource-maps siblings |
 
 ---
 
@@ -358,6 +403,7 @@ Complete, schema-valid Task JSON for the first M0 build item (`benefits-navigato
     "Sets a fail-closed default (ambiguous/low-confidence intent -> refuse-and-route-to-human) and quantified false-negative targets (0 for individualized-determination and fraud categories; < 1% overall on the red-team suite)",
     "Defines the refusal/redirect behavior: refuse the offending part, explain plainly, and emit a correct official-application link AND a free-human-help pointer (navigator/legal aid/211; for immigration, qualified counsel/accredited representative)",
     "Defines the adversarial test taxonomy the red-team suite must cover - multiple phrasings + prompt-injection per refused category, plus cumulative-intent decomposition and reframing/euphemism attacks - with a minimum number of cases per category and a 100%-refused/redirected, zero-bypass target",
+    "Specifies a labeled borderline-case calibration corpus (~50 worked phrasings) separating an allowed general conditional rule from a forbidden individualized determination, as a single shared source of truth feeding the intent classifier, the style guide, and reviewer training",
     "Mandates the persistent 'information, not legal/benefits advice' labeling, the credentialed benefits-reviewer sign-off gate, and the immigration-attorney sign-off gate for any immigration/public-charge content",
     "Reviewed and signed off by a credentialed public-benefits attorney and/or certified benefits counselor (recorded in the reviewers ledger)"
   ],
