@@ -1,0 +1,31 @@
+{
+  "id": "benefits-navigator-selection-000",
+  "title": "Pilot jurisdiction (state) + flagship program(s) selection, scored against explicit criteria - gates M1-M6",
+  "project": "benefits-navigator",
+  "type": "research",
+  "lane": "donated",
+  "priority": "high",
+  "domain": [
+    "civic",
+    "public-benefits",
+    "social-services",
+    "plain-language",
+    "accessibility"
+  ],
+  "riskTier": "medium",
+  "urgent": false,
+  "deliverable": "document",
+  "tokenEstimate": "small",
+  "status": "open",
+  "context": "Benefits-Navigator is an openly-licensed corpus of plain-language, primary-source-cited, multilingual, accessible guides to public-assistance programs (SNAP, Medicaid/CHIP, WIC, TANF, LIHEAP, SSI, housing, EITC, Lifeline/ACP), delivered as a static site, printable PDFs, and structured data with an optional retrieval-grounded explainer. It is a HIGH risk-tier project: it provides information, not legal/benefits advice, never makes an individualized eligibility determination, and always routes people to the official application and free human help. No partner, credentialed reviewer, or requestor is yet secured. This cold-start research task chooses the pilot jurisdiction and flagship program(s) against explicit criteria so M1-M6 build against the right corpus and reviewer profile; the specific jurisdiction stays TO BE SECURED until confirmed, but the decision rule and the fixed 2026-08-31 deadline are set here.",
+  "objective": "Select (or shortlist with a fixed 2026-08-31 decision) the pilot jurisdiction (state) and flagship program(s), scored against explicit criteria, and record the decision with rationale as the dependency that gates M1 source/content tasks.",
+  "acceptanceCriteria": [
+    "Scores candidates against explicit criteria: (1) non-federal source reuse is clean/safely summarizable; (2) high need + large take-up gap for the program; (3) an available credentialed reviewer for that state+program; (4) manageable rule complexity (e.g., SNAP's federally-structured rules over Medicaid's expansion/waiver variation); (5) a plausible pilot partner in that geography",
+    "Records the decision (or shortlist + the fixed 2026-08-31 deadline) with rationale; the chosen jurisdiction+program become dependencies for M1 source/content tasks",
+    "The specific jurisdiction remains TO BE SECURED until confirmed, but the decision rule and deadline are fixed; this task gates M1-M6 sequencing"
+  ],
+  "output": "/output/selection/jurisdiction-and-program-selection.md",
+  "requestor": "TO BE SECURED",
+  "verifiedNeed": false,
+  "outputLicense": "CC-BY-4.0"
+}

@@ -1,0 +1,31 @@
+{
+  "id": "benefits-navigator-public-charge-026",
+  "title": "Dedicated public-charge / non-citizen-eligibility explainer",
+  "project": "benefits-navigator",
+  "type": "writing",
+  "lane": "donated",
+  "priority": "medium",
+  "domain": [
+    "civic",
+    "public-benefits",
+    "social-services",
+    "plain-language",
+    "accessibility"
+  ],
+  "riskTier": "high",
+  "urgent": false,
+  "deliverable": "document",
+  "tokenEstimate": "medium",
+  "status": "open",
+  "context": "Benefits-Navigator is an openly-licensed corpus of plain-language, primary-source-cited, multilingual, accessible guides to public-assistance programs (SNAP, Medicaid/CHIP, WIC, TANF, LIHEAP, SSI, housing, EITC, Lifeline/ACP), delivered as a static site, printable PDFs, and structured data with an optional retrieval-grounded explainer. It is a HIGH risk-tier project: it provides information, not legal/benefits advice, never makes an individualized eligibility determination, and always routes people to the official application and free human help. No partner, credentialed reviewer, or requestor is yet secured. Future work: a dedicated public-charge / non-citizen-eligibility explainer - among the highest-stakes content for immigrant families, where misplaced fear causes people to forgo benefits or care. Immigration-attorney sign-off is mandatory; it must be neutral, current, and route to qualified counsel, and it gives no individualized public-charge analysis or immigration legal advice (information, not advice).",
+  "objective": "Write a neutral, current, primary-source-cited public-charge / non-citizen-eligibility explainer that routes to qualified counsel and gives no individualized public-charge analysis, with mandatory immigration-attorney sign-off.",
+  "acceptanceCriteria": [
+    "Explains public-charge / non-citizen-eligibility neutrally and currently, primary-source-cited, with no individualized public-charge analysis and no immigration legal advice (information, not advice)",
+    "Routes the reader to qualified counsel / accredited representative and free human help; carries the fixed not-advice + non-partisan framing",
+    "Immigration-attorney sign-off recorded as mandatory before it ships; figures kept current via the staleness fail-safe"
+  ],
+  "output": "/output/guides/public-charge-explainer.md",
+  "requestor": "TO BE SECURED",
+  "verifiedNeed": false,
+  "outputLicense": "CC-BY-4.0"
+}

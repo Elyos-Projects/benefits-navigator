@@ -1,0 +1,33 @@
+{
+  "id": "benefits-navigator-mcp-030",
+  "title": "MCP server + embeddable open-data layer exposing the vetted corpus (not-advice guardrails enforced server-side)",
+  "project": "benefits-navigator",
+  "type": "code",
+  "lane": "donated",
+  "priority": "low",
+  "domain": [
+    "civic",
+    "public-benefits",
+    "social-services",
+    "plain-language",
+    "accessibility"
+  ],
+  "riskTier": "medium",
+  "urgent": false,
+  "deliverable": "pr",
+  "tokenEstimate": "medium",
+  "status": "open",
+  "context": "Benefits-Navigator is an openly-licensed corpus of plain-language, primary-source-cited, multilingual, accessible guides to public-assistance programs (SNAP, Medicaid/CHIP, WIC, TANF, LIHEAP, SSI, housing, EITC, Lifeline/ACP), delivered as a static site, printable PDFs, and structured data with an optional retrieval-grounded explainer. It is a HIGH risk-tier project: it provides information, not legal/benefits advice, never makes an individualized eligibility determination, and always routes people to the official application and free human help. The project's differentiator is an openly-licensed, primary-source-cited, currency-guaranteed, plain-language explainer layer with zero PII and a route-to-human guarantee, which can be embedded inside findhelp/211/Code-for-America-style flows. An MCP server exposing the vetted corpus makes this embedding possible: other agents and tools can ground on the Benefits-Navigator corpus with the not-advice guardrails enforced server-side. This is an M6/post-delivery artifact that can only ship after the corpus is stable and expert-reviewed. The server must live in packages/ (agent-neutral core) and contain no vendor/agent-specific logic. No partner, credentialed reviewer, or requestor is yet secured.",
+  "objective": "Implement a provider-neutral MCP server that exposes the vetted, expert-reviewed Benefits-Navigator corpus (guides, structured eligibility-factor data, citations, and currency metadata) as tools other agents can ground on, with not-advice guardrails enforced server-side so the corpus is safe to embed inside findhelp/211/CfA-style flows and other assistants.",
+  "acceptanceCriteria": [
+    "Implements a provider-neutral MCP server in packages/ (agent-neutral core; no vendor/agent-specific logic) exposing the vetted corpus as tools: search/retrieve guides, eligibility factors, citations, and currency metadata (lastVerified/validUntil/effectiveDate)",
+    "Not-advice guardrails enforced server-side: the server refuses individualized-determination queries and always emits a route-to-human pointer alongside any program-information response; user/agent content cannot override the policy; the server carries the not-advice framing on every response",
+    "Zero PII solicited or retained; the server is stateless/trackless; no user session stored; privacy review confirms zero-PII/trackless delivery",
+    "Only expert-reviewed, signed-off corpus content is served; currency metadata is exposed so callers can determine freshness; claims past validUntil or a recorded effectiveDate boundary are flagged or withheld per the staleness fail-safe (benefits-navigator-provenance-007)",
+    "Ships only after M5 (the corpus is expert-reviewed and partner-adopted); the MCP server is the open-data embedding layer, not a standalone product — it gates on a stable, vetted corpus and a clear distribution-partner use case"
+  ],
+  "output": "packages/mcp-server/src/index.ts",
+  "requestor": "TO BE SECURED",
+  "verifiedNeed": false,
+  "outputLicense": "MIT"
+}

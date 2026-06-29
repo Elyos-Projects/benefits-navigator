@@ -376,6 +376,56 @@ change-watch), an embeddable open-data/MCP layer, and a gated expansion process.
 
 ---
 
+## Generated task index
+
+The Elyos CLI executes the machine-readable `tasks/*.json` files (validated against
+`packages/schema`), not this `TASKS.md`. Every backlog row above now has a corresponding
+schema-valid `tasks/<id>.json`. All 29 task files validate clean (`filename == id`, no
+duplicates, no extra keys).
+
+**Authoring notes**
+- **`type` vs. `deliverable` for translation rows.** `translation` is a *deliverable*, not a
+  schema `type`. The i18n/languages rows (`benefits-navigator-i18n-012`,
+  `benefits-navigator-languages-025`) are encoded as `type: "writing"` + `deliverable: "translation"`.
+- **Defaults (per "How these tasks map to Elyos").** Every task is `lane: donated`,
+  `status: open`, `urgent: false`, `verifiedNeed: false`, `requestor: "TO BE SECURED"` (no partner,
+  reviewer, or requestor is yet secured). `outputLicense` is `MIT` for code/`pr` deliverables and
+  `CC-BY-4.0` for content/data/document/translation deliverables.
+- **No fan-out — representative tasks only.** No dimension in `PLAN.md`/`TASKS.md` is concretely
+  enumerated: the pilot jurisdiction, flagship program(s), additional programs, second jurisdiction,
+  and translation languages are all open-ended / `TO BE SECURED`. Per the bounded fan-out policy,
+  template rows (`-programs-013`, `-program-023`, `-jurisdiction-024`, `-languages-025`,
+  `-i18n-012`) are kept as **one representative task each**; they expand to per-item tasks only once
+  the jurisdiction/program/language set is confirmed. No languages, programs, jurisdictions, or
+  beneficiaries were fabricated.
+- **Guardrails preserved.** HIGH risk-tier framing is carried verbatim into the relevant tasks:
+  credentialed benefits-reviewer sign-off for any eligibility/threshold/application content;
+  immigration-attorney sign-off for public-charge / non-citizen-eligibility content
+  (`-guide-008`, `-programs-013`, `-public-charge-026`); the not-advice / refusal policy
+  (`-policy-001`) and its executable enforcement (`-explainer-016`, `-redteam-017`). No task
+  authors refused content (no individualized determinations, no fraud/structuring coaching, no
+  immigration legal advice) — those remain refusal/guardrail tasks.
+
+**Index (id — milestone):**
+
+- M0: `benefits-navigator-selection-000`, `benefits-navigator-policy-001` (seed),
+  `benefits-navigator-schema-002`, `benefits-navigator-style-003`,
+  `benefits-navigator-sourcing-004`, `benefits-navigator-repo-005`
+- M1: `benefits-navigator-sources-006`, `benefits-navigator-provenance-007`,
+  `benefits-navigator-guide-008`, `benefits-navigator-eval-009`
+- M2: `benefits-navigator-readability-010`, `benefits-navigator-a11y-011`,
+  `benefits-navigator-i18n-012`, `benefits-navigator-programs-013`
+- M3: `benefits-navigator-site-014`, `benefits-navigator-help-015`,
+  `benefits-navigator-explainer-016`, `benefits-navigator-redteam-017`
+- M4: `benefits-navigator-eval-018`, `benefits-navigator-hardening-019`
+- M5: `benefits-navigator-pilot-020`, `benefits-navigator-handoff-021`
+- M6: `benefits-navigator-ops-022`
+- Backlog/future: `benefits-navigator-program-023`, `benefits-navigator-jurisdiction-024`,
+  `benefits-navigator-languages-025`, `benefits-navigator-public-charge-026`,
+  `benefits-navigator-doc-helper-027`, `benefits-navigator-print-028`
+
+---
+
 ## Example task JSON
 
 Complete, schema-valid Task JSON for the first M0 build item (`benefits-navigator-policy-001`):

@@ -1,0 +1,33 @@
+{
+  "id": "benefits-navigator-watch-029",
+  "title": "Monitored-sources change-watch (FNS/CMS/IRS/state portals + Federal Register) → auto-opens re-verification tasks",
+  "project": "benefits-navigator",
+  "type": "code",
+  "lane": "donated",
+  "priority": "medium",
+  "domain": [
+    "civic",
+    "public-benefits",
+    "social-services",
+    "plain-language",
+    "accessibility"
+  ],
+  "riskTier": "medium",
+  "urgent": false,
+  "deliverable": "pr",
+  "tokenEstimate": "medium",
+  "status": "open",
+  "context": "Benefits-Navigator is an openly-licensed corpus of plain-language, primary-source-cited, multilingual, accessible guides to public-assistance programs (SNAP, Medicaid/CHIP, WIC, TANF, LIHEAP, SSI, housing, EITC, Lifeline/ACP), delivered as a static site, printable PDFs, and structured data with an optional retrieval-grounded explainer. It is a HIGH risk-tier project: it provides information, not legal/benefits advice, never makes an individualized eligibility determination, and always routes people to the official application and free human help. 2025-2027 is an exceptional period of regulatory churn: the One Big Beautiful Bill Act (OBBBA, signed 2025-07-04) rewrote SNAP and Medicaid work requirements with staggered effective dates (2026-10-01 and 2026-12-31/2027-01-01), and a DHS public-charge NPRM is pending. A calendar-only re-verification cadence is insufficient; the provenance model requires event-driven re-verification that fires when an authoritative source changes, not just on a schedule. This task implements that monitored-sources change-watch as an M4 hardening artifact, with the monitored-sources list configurable by the maintainer. No partner, credentialed reviewer, or requestor is yet secured.",
+  "objective": "Implement a monitored-sources change-watch that polls a configurable list of official source URLs (FNS/CMS/IRS/state portals + Federal Register) for content changes and automatically opens re-verification tasks for every guide claim sourced from a changed page, making currency event-driven rather than calendar-only.",
+  "acceptanceCriteria": [
+    "Implements a configurable change-watch that monitors official source URLs (FNS/CMS/IRS/state portals + Federal Register) for content changes, keyed to the sources recorded in the provenance layer (packages/provenance)",
+    "When a watched source changes, automatically surfaces a re-verification task for every claim in the corpus that cites that source, so no affected claim silently continues to serve as current",
+    "Integrates with the staleness fail-safe in packages/provenance: a triggered re-verification suspends the affected claims (auto-flag or withhold per severity) until the maintainer re-verifies and re-signs-off",
+    "The watch list is maintainer-configurable (add/remove sources without code changes); false-positive handling distinguishes cosmetic page changes from regulatory content changes; watch runs in CI and/or as a scheduled job",
+    "Candidate for extraction as a standalone currency-watch utility (documented extension point) that other civic-info projects could subscribe to, consistent with PLAN.md Adjacent Opportunities"
+  ],
+  "output": "packages/watch/src/index.ts",
+  "requestor": "TO BE SECURED",
+  "verifiedNeed": false,
+  "outputLicense": "MIT"
+}

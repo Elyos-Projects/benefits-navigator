@@ -1,0 +1,31 @@
+{
+  "id": "benefits-navigator-sources-006",
+  "title": "Vet + record sources for the flagship program in the pilot jurisdiction (reuse terms + provenance)",
+  "project": "benefits-navigator",
+  "type": "data",
+  "lane": "donated",
+  "priority": "high",
+  "domain": [
+    "civic",
+    "public-benefits",
+    "social-services",
+    "plain-language",
+    "accessibility"
+  ],
+  "riskTier": "high",
+  "urgent": false,
+  "deliverable": "dataset",
+  "tokenEstimate": "medium",
+  "status": "open",
+  "context": "Benefits-Navigator is an openly-licensed corpus of plain-language, primary-source-cited, multilingual, accessible guides to public-assistance programs (SNAP, Medicaid/CHIP, WIC, TANF, LIHEAP, SSI, housing, EITC, Lifeline/ACP), delivered as a static site, printable PDFs, and structured data with an optional retrieval-grounded explainer. It is a HIGH risk-tier project: it provides information, not legal/benefits advice, never makes an individualized eligibility determination, and always routes people to the official application and free human help. No partner, credentialed reviewer, or requestor is yet secured. This task vets and records the primary sources for the flagship program in the pilot jurisdiction - verifying reuse terms and capturing full provenance - before any content is written. The specific program and jurisdiction are TO BE SECURED (depends on selection-000); expert sign-off is required before sources are enabled.",
+  "objective": "Vet and record the primary sources for the flagship program in the pilot jurisdiction, with reuse terms verified and full provenance captured, gated on expert sign-off before enabling for content.",
+  "acceptanceCriteria": [
+    "Reuse terms verified and recorded per source: federal works treated as public domain (17 U.S.C. 105, cited not copied); every non-federal/state source's reuse terms verified before enabling",
+    "Provenance recorded per source (name, jurisdiction, citation/section, retrieval date, URL, reuse-status note, lastVerified, validUntil)",
+    "Expert sign-off recorded before sources are enabled for content"
+  ],
+  "output": "/output/sources/flagship-program.sources.dataset.json",
+  "requestor": "TO BE SECURED",
+  "verifiedNeed": false,
+  "outputLicense": "CC-BY-4.0"
+}
