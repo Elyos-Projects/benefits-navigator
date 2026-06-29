@@ -1,0 +1,37 @@
+{
+  "id": "benefits-navigator-policy-001",
+  "title": "Not-advice / refusal policy specification (no individualized determinations, no fraud/structuring, no immigration legal advice, route-to-human)",
+  "project": "benefits-navigator",
+  "type": "design-spec",
+  "lane": "donated",
+  "priority": "high",
+  "domain": ["civic", "public-benefits", "social-services", "plain-language", "accessibility"],
+  "riskTier": "high",
+  "urgent": false,
+  "deliverable": "document",
+  "tokenEstimate": "medium",
+  "status": "open",
+  "context": "Benefits-Navigator produces plain-language, primary-source-cited, multilingual, accessible guides to public-assistance programs (SNAP, Medicaid/CHIP, WIC, TANF, LIHEAP, SSI, housing, EITC, Lifeline/ACP). It is a HIGH risk-tier project: benefits eligibility is high-stakes, and wrong or over-reaching information can cause a person to forgo benefits they are entitled to, waste a determination window, incur an overpayment, or - most seriously for immigrant families - avoid care out of misplaced fear. The project is therefore engineered to refuse both misuse and over-reach: it never makes an individualized eligibility determination, never advises how to structure income/assets or conceal information to qualify (benefits fraud), and never gives immigration legal advice. It is information, not advice, and it always routes the person to the official application and to free human help. This cold-start task specifies that not-advice/refusal policy before any guide or interactive feature is built. No partner, credentialed reviewer, or requestor is yet secured.",
+  "objective": "Write the authoritative not-advice / refusal policy specification that all later content and the optional retrieval-grounded explainer must implement and be tested against: the information-not-advice and non-partisan framing, the concrete refused-use set, the allowed categories, the three enforcement points (intent classification, injected NOT_ADVICE_SYSTEM policy, independent output screening), the fail-closed default, the corpus-only no-source-no-claim rule, the refusal/route-to-human behavior, the adversarial test taxonomy, and the credentialed-reviewer and immigration-attorney gates.",
+  "acceptanceCriteria": [
+    "Enumerates the refused-use set in concrete, testable terms: individualized eligibility determinations; benefit-amount promises ('you'll get $X'); income/asset/household structuring or 'how to qualify' coaching; concealment/fraud (hiding income/assets from an agency); immigration legal advice / individualized public-charge analysis; application filling/submission; and any autonomous action on a person's behalf",
+    "Defines the allowed categories (explain a program, general eligibility factors, how to apply, documents typically needed, where to get free human help) and the information-not-advice, non-partisan, 'only the agency decides' framing",
+    "Specifies three enforcement points - input intent classification, injected NOT_ADVICE_SYSTEM policy, and independent output screening - with server-side, injection-resistant enforcement that user/document content cannot override, plus corpus-only generation and a no-source-no-claim rule that rejects un-cited eligibility numbers",
+    "Sets a fail-closed default (ambiguous/low-confidence intent -> refuse-and-route-to-human) and quantified false-negative targets (0 for individualized-determination and fraud categories; < 1% overall on the red-team suite)",
+    "Defines the refusal/redirect behavior: refuse the offending part, explain plainly, and emit a correct official-application link AND a free-human-help pointer (navigator/legal aid/211; for immigration, qualified counsel/accredited representative)",
+    "Defines the adversarial test taxonomy the red-team suite must cover - multiple phrasings + prompt-injection per refused category, plus cumulative-intent decomposition and reframing/euphemism attacks - with a minimum number of cases per category and a 100%-refused/redirected, zero-bypass target",
+    "Mandates the persistent 'information, not legal/benefits advice' labeling, the credentialed benefits-reviewer sign-off gate, and the immigration-attorney sign-off gate for any immigration/public-charge content",
+    "Reviewed and signed off by a credentialed public-benefits attorney and/or certified benefits counselor (recorded in the reviewers ledger)"
+  ],
+  "resources": [
+    "planning/projects/benefits-navigator/PLAN.md",
+    "CLAUDE.md",
+    "docs/good-deed-definition.md",
+    "packages/schema/src/schemas.ts",
+    "planning/projects/public-official-guide/PLAN.md"
+  ],
+  "output": "A reviewed policy-specification document (the not-advice / refusal charter) defining the refused-use set, allowed categories, three enforcement points, fail-closed default, corpus-only no-source-no-claim rule, refusal/route-to-human behavior, adversarial test taxonomy, and review/labeling gates - the contract that benefits-navigator-explainer-016 (explainer) and benefits-navigator-redteam-017 (red-team suite) implement and verify.",
+  "requestor": "TO BE SECURED",
+  "verifiedNeed": false,
+  "outputLicense": "CC-BY-4.0"
+}
